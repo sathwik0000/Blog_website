@@ -10,24 +10,40 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       postId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'Posts',
+          key: 'id'
+        },
+        allowNull: false,
+        onDelete: 'CASCADE',
       },
-      username: {
-        type: Sequelize.STRING
+      userId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'Users',
+          key: 'id'
+        },
+        allowNull: false,
+        onDelete: 'CASCADE',
       },
       content: {
-        type: Sequelize.TEXT
+        type: Sequelize.TEXT,
+        allowNull: false,
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.NOW, // Set default timestamp
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.NOW, // Set default timestamp
       }
     });
   },
+
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('Comments');
   }

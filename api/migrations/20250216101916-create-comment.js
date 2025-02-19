@@ -18,29 +18,19 @@ module.exports = {
         allowNull: false,
         onDelete: 'CASCADE',
       },
-      userId: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: 'Users',
-          key: 'id'
-        },
+      username: {
+        type: Sequelize.STRING,
         allowNull: false,
-        onDelete: 'CASCADE',
       },
       content: {
         type: Sequelize.TEXT,
         allowNull: false,
       },
       createdAt: {
+        type: Sequelize.TIMESTAMP,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
         allowNull: false,
-        type: Sequelize.DATE,
-        defaultValue: Sequelize.NOW, // Set default timestamp
       },
-      updatedAt: {
-        allowNull: false,
-        type: Sequelize.DATE,
-        defaultValue: Sequelize.NOW, // Set default timestamp
-      }
     });
   },
 

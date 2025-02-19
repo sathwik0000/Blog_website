@@ -49,7 +49,42 @@ const getPosts = async (req, res) => {
         });
 };
 
+const updatePost = async (req, res) => {
+    const { id } = req.params;
+    const { title, content } = req.body;
+
+    if(!title || !content){
+        res.status(401).json({ message: 'Title and Content are required.' });
+    }
+
+    const post = await Post.findByPk(id);
+
+    if(!post) {
+        return res.status(404).json({ message: 'Post not found'});
+    }
+
+    if(post.userId !== req.body.userId){
+        return res.status(403).json({ message: 'Unauthorized to update this post.' });
+    }
+
+    await post.update({ title, content });
+    res.json({ message: 'Post updated successfully' }, post);
+
+};
+
+const deletePost = async (req, res) => {
+    const { id } = req.params;
+    const post = await Post.findByPk(id);
+    if(!post){
+        return res.status(404).json({ message: 'Post not found.' });
+    }
+    await post.destroy();
+    res.status(200).json({ message:'Post deleted successfully.' });
+};
+
 module.exports = {
     getPosts,
-    createPost
+    createPost,
+    updatePost,
+    deletePost
 };

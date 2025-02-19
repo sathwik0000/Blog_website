@@ -24,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
           allowNull: false,
           unique: true,
           validate: {
-            isEmail: true, // Ensures valid email format
+            isEmail: true,
           },
         },
         password: {
@@ -35,6 +35,7 @@ module.exports = (sequelize, DataTypes) => {
       {
         sequelize,
         modelName: 'User',
+        tableName: 'Users'
       }
   );
 

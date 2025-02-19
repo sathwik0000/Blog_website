@@ -4,13 +4,10 @@ const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
     class Comment extends Model {
         static associate(models) {
-            // Each comment belongs to a post
             Comment.belongsTo(models.Post, {
                 foreignKey: 'postId',
                 onDelete: 'CASCADE',
             });
-
-            // Each comment belongs to a user
             Comment.belongsTo(models.User, {
                 foreignKey: 'userId',
                 onDelete: 'CASCADE',
@@ -28,22 +25,24 @@ module.exports = (sequelize, DataTypes) => {
                     key: 'id',
                 },
             },
-            userId: {
-                type: DataTypes.INTEGER,
+            username: {
+                type: DataTypes.STRING,
                 allowNull: false,
-                references: {
-                    model: 'Users',
-                    key: 'id',
-                },
             },
             content: {
                 type: DataTypes.TEXT,
+                allowNull: false,
+            },
+            createdAt: {
+                type: DataTypes.TIMESTAMP,
+                defaultValue: DataTypes.literal('CURRENT_TIMESTAMP'),
                 allowNull: false,
             },
         },
         {
             sequelize,
             modelName: 'Comment',
+            tableName: 'Comments',
         }
     );
 

@@ -1,20 +1,17 @@
-const { Post, Comment, User } = require('../models');
+const { Post, Comment } = require('../models');
 
-// Add a comment to a post
 const createComment = async (req, res) => {
     const { postId } = req.params;
-    const { content } = req.body;
+    const { content, username } = req.body;
 
-    // Ensure post exists
     const post = await Post.findByPk(postId);
     if (!post) {
         return res.status(404).json({ message: 'Post not found' });
     }
 
-    // Create a new comment
     const comment = await Comment.create({
         postId,
-        userId: req.user.id,
+        username,
         content,
     });
 

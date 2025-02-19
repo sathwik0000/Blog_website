@@ -1,46 +1,73 @@
-import React , { useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import instance from "../axios";
+import axios from "axios";
 
 const Register = () => {
-  const [inputs, setInputs] =useState(
-    {
-      username: "",
-      email: "",
-      password: "",
-    }
-  )
+    const [inputs, setInputs] = useState({
+        username: "",
+        email: "",
+        password: "",
+    });
 
-  const handleChange = e => {
-       setInputs(prev=>( {...prev, [e.target.name]: e.target.value}))    
-  }
+    const [error, setError] = useState(null);
+    const [success, setSuccess] = useState(null);
 
-  const handleSubmit = async e =>{
-     e.preventDefault() 
-     try {
-     const res = await instance.post("/register", inputs )
-     console.log(res)
-     } catch(err) {
-      console.log(err)
-     }
-  }
-  return (
-   <div className="auth">
-     <h1> Register</h1>
-     <form>
-      <input required type="text" placeholder="username" name='username' onChange={handleChange} />
-      <input  required type="email" placeholder="E-mail" name='email' onChange={handleChange} />
-      <input required type="password" placeholder="password" name='password' onChange={handleChange} />
-      <button onClick={handleSubmit}>Register</button>
-      <p>This is an error!</p>
-      <span>Do you  have an account?
-        <Link to="/Login">login</Link>
-      </span>
-     </form>
+    const handleChange = (e) => {
+        setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    };
 
-   </div>
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError(null);
+        setSuccess(null);
 
-  );
+        try {
+            const res = await axios.post("/register", inputs);
+            setSuccess(res.data.message);
+        } catch (err) {
+            setError(err.response?.data?.message || "Something went wrong!");
+        }
+    };
+
+    return (
+        <div className="auth">
+            <h1>Register</h1>
+            <form onSubmit={handleSubmit}>
+                <input
+                    required
+                    type="text"
+                    placeholder="Username"
+                    name="username"
+                    value={inputs.username}
+                    onChange={handleChange}
+                />
+                <input
+                    required
+                    type="email"
+                    placeholder="E-mail"
+                    name="email"
+                    value={inputs.email}
+                    onChange={handleChange}
+                />
+                <input
+                    required
+                    type="password"
+                    placeholder="Password"
+                    name="password"
+                    value={inputs.password}
+                    onChange={handleChange}
+                />
+                <button type="submit">Register</button>
+
+                {error && <p className="error">{error}</p>}
+                {success && <p className="success" style={{ color: "green" }} >{success}</p>}
+
+                <span>
+          Already have an account? <Link to="/login">Login</Link>
+        </span>
+            </form>
+        </div>
+    );
 };
 
 export default Register;

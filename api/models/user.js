@@ -4,40 +4,39 @@ const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     static associate(models) {
-      // A user can have many posts
+      // A user can have multiple posts
       User.hasMany(models.Post, {
         foreignKey: 'userId',
-        onDelete: 'CASCADE',
+        onDelete: 'CASCADE'
       });
     }
   }
-
-  User.init(
-      {
-        username: {
-          type: DataTypes.STRING,
-          allowNull: false,
-          unique: true,
-        },
-        email: {
-          type: DataTypes.STRING,
-          allowNull: false,
-          unique: true,
-          validate: {
-            isEmail: true,
-          },
-        },
-        password: {
-          type: DataTypes.STRING,
-          allowNull: false,
-        },
-      },
-      {
-        sequelize,
-        modelName: 'User',
-        tableName: 'Users'
-      }
-  );
+  User.init({
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+      allowNull: false,
+    },
+    username: {
+      type: DataTypes.STRING,
+      unique: true,
+      allowNull: false,
+    },
+    email: {
+      type: DataTypes.STRING,
+      unique: true,
+      allowNull: false,
+    },
+    password: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    }
+  }, {
+    sequelize,
+    modelName: 'User',
+    timestamps: true,
+  });
 
   return User;
 };

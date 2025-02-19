@@ -7,22 +7,17 @@ const createPost = async (req, res) => {
         return res.status(400).json({ message: 'Title and content are required.' });
     }
 
-    Post.create({
+    const newPost = await Post.create({
         title,
         content,
         userId: req.user.id,
-    })
-        .then(newPost => {
-            res.status(201).json(newPost);
-        })
-        .catch(err => {
-            console.error(err);
-            res.status(500).json({ message: 'Server error' });
-        });
+    });
+
+    res.status(201).json(newPost);
 };
 
 const getPosts = async (req, res) => {
-    Post.findAll({
+    const posts = await Post.findAll({
         include: [
             {
                 model: User,
@@ -30,56 +25,46 @@ const getPosts = async (req, res) => {
             },
             {
                 model: Comment,
-                attributes: ['content'],
-                include: [
-                    {
-                        model: User,
-                        attributes: ['username'],
-                    }
-                ]
+                attributes: ['username', 'content'],
             }
         ]
-    })
-        .then(posts => {
-            res.status(200).json(posts);
-        })
-        .catch(err => {
-            console.error(err);
-            res.status(500).json({ message: 'Server error' });
-        });
+    });
+
+    res.status(200).json(posts);
 };
 
 const updatePost = async (req, res) => {
     const { id } = req.params;
-    const { title, content } = req.body;
+    const { title, content, userId } = req.body;
 
-    if(!title || !content){
-        res.status(401).json({ message: 'Title and Content are required.' });
+    if (!title || !content) {
+        return res.status(400).json({ message: 'Title and Content are required.' });
     }
 
     const post = await Post.findByPk(id);
 
-    if(!post) {
-        return res.status(404).json({ message: 'Post not found'});
+    if (!post) {
+        return res.status(404).json({ message: 'Post not found' });
     }
 
-    if(post.userId !== req.body.userId){
+    if (post.userId !== req.user.id) {
         return res.status(403).json({ message: 'Unauthorized to update this post.' });
     }
 
     await post.update({ title, content });
-    res.json({ message: 'Post updated successfully' }, post);
-
+    res.json({ message: 'Post updated successfully', post });
 };
 
 const deletePost = async (req, res) => {
     const { id } = req.params;
     const post = await Post.findByPk(id);
-    if(!post){
+
+    if (!post) {
         return res.status(404).json({ message: 'Post not found.' });
     }
+
     await post.destroy();
-    res.status(200).json({ message:'Post deleted successfully.' });
+    res.status(200).json({ message: 'Post deleted successfully.' });
 };
 
 module.exports = {

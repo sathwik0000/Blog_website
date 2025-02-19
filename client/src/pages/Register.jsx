@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import raxios from "../axios";
 
 const Register = () => {
     const [inputs, setInputs] = useState({
@@ -22,7 +22,7 @@ const Register = () => {
         setSuccess(null);
 
         try {
-            const res = await axios.post("/register", inputs);
+            const res = await raxios.post("/register", inputs);
             setSuccess(res.data.message);
         } catch (err) {
             setError(err.response?.data?.message || "Something went wrong!");
@@ -63,8 +63,8 @@ const Register = () => {
                 {success && <p className="success" style={{ color: "green" }} >{success}</p>}
 
                 <span>
-          Already have an account? <Link to="/login">Login</Link>
-        </span>
+                    Already have an account? <Link to="/login">Login</Link>
+                </span>
             </form>
         </div>
     );

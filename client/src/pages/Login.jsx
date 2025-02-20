@@ -21,6 +21,7 @@ const Login = () => {
 
         try {
             const res = await axios.post("/login", inputs);
+            sessionStorage.setItem("token": res.data.token);
             console.log(res.data); // Check response in the console
             navigate("/"); // Redirect to home on successful login
         } catch (err) {

@@ -6,7 +6,7 @@ const createComment = async (req, res) => {
 
     const post = await Post.findByPk(postId);
     if (!post) {
-        return jres.status(404).json({ message: 'Post not found' });
+        return res.status(404).json({ message: 'Post not found' });
     }
 
     const comment = await Comment.create({

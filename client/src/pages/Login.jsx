@@ -25,7 +25,7 @@ const Login = () => {
             console.log(res.data); // Check response in the console
             navigate("/"); // Redirect to home on successful login
         } catch (err) {
-            setError(err.response?.data?.message || "Invalid credentials!");
+            setError(err.response?.data?.message || "Something went wrong. Please try again.");
         }
     };
 

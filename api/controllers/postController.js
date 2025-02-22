@@ -35,7 +35,7 @@ const getPosts = async (req, res) => {
 
 const updatePost = async (req, res) => {
     const { id } = req.params;
-    const { title, content, userId } = req.body;
+    const { title, content } = req.body;
 
     if (!title || !content) {
         return res.status(400).json({ message: 'Title and Content are required.' });
@@ -57,10 +57,15 @@ const updatePost = async (req, res) => {
 
 const deletePost = async (req, res) => {
     const { id } = req.params;
+
     const post = await Post.findByPk(id);
 
     if (!post) {
         return res.status(404).json({ message: 'Post not found.' });
+    }
+
+    if (post.userId !== req.user.id) {
+        return res.status(403).json({ message: 'Unauthorized to delete this post.' });
     }
 
     await post.destroy();

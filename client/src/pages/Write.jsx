@@ -88,7 +88,7 @@ const Write = () => {
               {loading ? "Publishing..." : "Publish"}
             </button>
           </div>
-          {error && <p style={styles.error}>{error}</p>}
+          {error && <p> style={styles.error}{error}</p>}
         </div>
 
         {/* Category Section */}

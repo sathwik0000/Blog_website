@@ -2,22 +2,18 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Single = () => {
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     const [passwords, setPasswords] = useState({
         password: "",
         confirmPassword: ""
     });
     
-    const [profileImage, setProfileImage] = useState(sessionStorage.getItem("profileImage") || "https://via.placeholder.com/150");
+    const [profileImage, setProfileImage] = useState("https://via.placeholder.com/150");
     const [isEditing, setIsEditing] = useState(false);
-
-    useEffect(() => {
-        setUserData((prev) => ({
-            ...prev,
-            username: sessionStorage.getItem("username") || prev.username,
-            email: sessionStorage.getItem("email") || prev.email,
-        }));
-    }, []);
+    const [userData, setUserData] = useState({
+        username: "",
+        email: ""
+    });
 
     const handleChange = (e) => {
         setUserData({ ...userData, [e.target.name]: e.target.value });
@@ -30,17 +26,12 @@ const Single = () => {
     const handleSave = () => {
         if (passwords.password && passwords.password !== passwords.confirmPassword) {
             alert("Passwords do not match!");
-            return;
-        }
-        sessionStorage.setItem("username", userData.username);
-        sessionStorage.setItem("email", userData.email);
-        sessionStorage.setItem("profileImage", profileImage);
+            return;        }
         alert("Profile updated successfully!");
         setIsEditing(false);
     };
 
     const handleLogout = () => {
-        sessionStorage.clear();
         alert("Logged out!");
         navigate("/login");
     };
@@ -221,6 +212,9 @@ const styles = {
         fontSize: "16px",
         cursor: "pointer",
     },
-};
+
+
+
+ };
 
 export default Single;

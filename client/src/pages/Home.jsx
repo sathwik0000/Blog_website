@@ -85,7 +85,7 @@ const Home = () => {
       console.log("Delete response:", response);
     } catch (error) {
       console.error("Error deleting post:", error.response?.data || error);
-      alert("Unauthorize to delete this post");
+      alert("Unauthorized to delete this post");
       setPosts(originalPosts);
     }
   };

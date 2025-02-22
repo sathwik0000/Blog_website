@@ -9,7 +9,7 @@ import Home from "./pages/Home";
 import Single from "./pages/Single";
 import Write from "./pages/Write";
 import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
+
 import "./style.scss";
 
 const Layout = () => {
@@ -17,7 +17,7 @@ const Layout = () => {
     <>
        <Navbar/>
        <Outlet/>
-       <Footer/>
+      
     </>
 );
 };
@@ -48,7 +48,6 @@ const router = createBrowserRouter([
       <div>
         <Navbar />
         <Home />
-        <Footer />
       </div>
     ),
   },

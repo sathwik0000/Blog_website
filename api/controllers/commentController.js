@@ -2,7 +2,8 @@ const { Post, Comment } = require('../models');
 
 const createComment = async (req, res) => {
     const { postId } = req.params;
-    const { content, username } = req.body;
+    const { content } = req.body;
+    const { username } = req.user;
 
     const post = await Post.findByPk(postId);
     if (!post) {

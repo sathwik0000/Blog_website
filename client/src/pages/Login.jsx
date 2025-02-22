@@ -21,10 +21,15 @@ const Login = () => {
 
         try {
             const res = await axios.post("/login", inputs);
-            sessionStorage.setItem("token": res.data.token);
-            console.log(res.data); // Check response in the console
-            navigate("/"); // Redirect to home on successful login
+
+            if (res.data?.token) {
+                sessionStorage.setItem("token", res.data.token);
+                navigate("/");
+            } else {
+                setError("Invalid response from server. Please try again");
+            }
         } catch (err) {
+            console.error("Login error:", err);
             setError(err.response?.data?.message || "Something went wrong. Please try again.");
         }
     };
@@ -54,8 +59,8 @@ const Login = () => {
                 {error && <p className="error">{error}</p>}
 
                 <span>
-          Don't have an account? <Link to="/register">Register</Link>
-        </span>
+                    Don't have an account? <Link to="/register">Register</Link>
+                </span>
             </form>
         </div>
     );

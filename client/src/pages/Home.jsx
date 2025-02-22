@@ -10,6 +10,8 @@ const Home = () => {
     try {
       const response = await raxios.get("/posts");
       console.log("Fetched posts:", response.data);
+
+      // Ensure posts are correctly set
       setPosts(response.data);
     } catch (error) {
       console.error("Error fetching posts:", error.response?.data || error);
@@ -26,14 +28,12 @@ const Home = () => {
 
     const token = sessionStorage.getItem("token");
     if (!token) {
-      console.error("No authorization token found.");
       alert("You must be logged in to comment.");
       return;
     }
 
     const commentText = commentInput[postId];
     if (!commentText || commentText.trim() === "") {
-      console.warn("Cannot post empty comment.");
       alert("Please write a comment before posting.");
       return;
     }
@@ -107,17 +107,19 @@ const Home = () => {
                   {/* Display Comments */}
                   <ul style={styles.commentList}>
                     {post.Comments?.length > 0 ? (
-                      post.Comments.map((comment, index) => (
-                        <li key={index} style={styles.commentItem}>
-                          <strong>{comment.username}</strong>{" "}
-                          <span style={styles.timestamp}>
-                          {comment.updatedAt
-                          ? `(${new Date(comment.updatedAt)})`
-                           : "(No timestamp)"}
-                          </span>
-                          <p>{comment.content}</p>
-                        </li>
-                      ))
+                      post.Comments.map((comment, index) => {
+                        const timestamp = comment.updatedAt
+                          ? new Date(comment.updatedAt)
+                          : null;
+                       
+                        return (
+                          <li key={index} style={styles.commentItem}>
+                            <strong>{comment.username}</strong>{" "}
+                        
+                            <p>{comment.content}</p>
+                          </li>
+                        );
+                      })
                     ) : (
                       <li style={styles.noComments}>
                         No comments yet. Be the first to comment!

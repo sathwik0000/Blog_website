@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import raxios from "../axios"; // Axios instance
-import deleteIcon from "../img/delete.png"; // Ensure correct path
+import raxios from "../axios"; 
+import deleteIcon from "../img/delete.png"; 
 
 const Home = () => {
   const [posts, setPosts] = useState([]);
@@ -13,7 +13,7 @@ const Home = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await raxios.get("http://localhost:8080/posts");
+        const response = await raxios.get("/posts");
         setPosts(response.data);
       } catch (error) {
         console.error("Error fetching posts:", error.response?.data || error);

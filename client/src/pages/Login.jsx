@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import raxios from "../axios";
 
 const Login = () => {
     const [inputs, setInputs] = useState({
@@ -20,7 +20,7 @@ const Login = () => {
         setError(null);
 
         try {
-            const res = await axios.post("/login", inputs);
+            const res = await raxios.post("/login", inputs);
 
             if (res.data?.token) {
                 sessionStorage.setItem("token", res.data.token);

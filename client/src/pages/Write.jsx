@@ -1,13 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import raxios from "../axios";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
 const Write = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [category, setCategory] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -28,22 +27,20 @@ const Write = () => {
         throw new Error("User is not authenticated. No token found.");
       }
 
-      console.log("Sending data:", { title, content, category, userId: 1 });
-
-      const response = await axios.post(
-        "http://localhost:8080/posts",
+      const response = await raxios.post(
+        "/posts",
         { title, content, userId: 1 },
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${sessionStorage.token}`,
+            Authorization: `Bearer ${token}`,
           },
         }
       );
 
       if (response.status === 201) {
         alert("Post published successfully!");
-        navigate(`/post/${response.data.id}`);
+        navigate("/"); 
       } else {
         throw new Error("Unexpected response status: " + response.status);
       }
@@ -79,7 +76,6 @@ const Write = () => {
           <p><b>Status:</b> Draft</p>
           <p><b>Visibility:</b> Public</p>
 
-         
           <input type="file" id="file" style={{ display: "none" }} />
 
           <div style={styles.buttonContainer}>
@@ -88,24 +84,7 @@ const Write = () => {
               {loading ? "Publishing..." : "Publish"}
             </button>
           </div>
-          {error && <p> style={styles.error}{error}</p>}
-        </div>
-
-        {/* Category Section */}
-        <div style={styles.card}>
-          <h2>Category</h2>
-          {["Art", "Science", "Technology", "Cinema", "Design", "Food"].map((cat) => (
-            <label key={cat} style={styles.categoryLabel}>
-              <input
-                type="radio"
-                name="category"
-                value={cat.toLowerCase()}
-                checked={category === cat.toLowerCase()}
-                onChange={() => setCategory(cat.toLowerCase())}
-              />
-              {cat}
-            </label>
-          ))}
+          {error && <p style={styles.error}>{error}</p>}
         </div>
       </div>
     </div>
@@ -159,16 +138,6 @@ const styles = {
     borderRadius: "10px",
     boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
   },
-  uploadBtn: {
-    display: "block",
-    backgroundColor: "#007bff",
-    color: "#fff",
-    padding: "10px",
-    textAlign: "center",
-    borderRadius: "6px",
-    cursor: "pointer",
-    marginTop: "10px",
-  },
   buttonContainer: {
     marginTop: "15px",
     display: "flex",
@@ -192,11 +161,6 @@ const styles = {
   error: {
     color: "red",
     marginTop: "10px",
-  },
-  categoryLabel: {
-    display: "block",
-    padding: "5px 0",
-    fontSize: "16px",
   },
 };
 

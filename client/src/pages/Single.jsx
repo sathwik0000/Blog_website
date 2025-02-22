@@ -2,14 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Single = () => {
-    const navigate = useNavigate();
-
-    // Fetch user data from sessionStorage
-    const [userData, setUserData] = useState({
-        username: sessionStorage.getItem("username") || "Guest",
-        email: sessionStorage.getItem("email") || "Not Available",
-    });
-    
+    const navigate = useNavigate()
     const [passwords, setPasswords] = useState({
         password: "",
         confirmPassword: ""

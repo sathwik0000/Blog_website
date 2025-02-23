@@ -1,15 +1,17 @@
 import { useState, useEffect } from "react";
-import raxios from "../axios"; 
-import deleteIcon from "../img/delete.png"; 
+import raxios from "../axios";
+import deleteIcon from "../img/delete.png";
+import editIcon from "../img/edit.png";
 
 const Home = () => {
   const [posts, setPosts] = useState([]);
   const [commentInput, setCommentInput] = useState({});
   const [loading, setLoading] = useState(true);
+  const [editMode, setEditMode] = useState(null);
+  const [editContent, setEditContent] = useState({ title: "", content: "" });
 
   const token = sessionStorage.getItem("token");
 
-  // Fetch posts from API
   useEffect(() => {
     const fetchPosts = async () => {
       try {
@@ -24,7 +26,6 @@ const Home = () => {
     fetchPosts();
   }, []);
 
-  // Handle comment submission
   const handleComment = async (postId) => {
     if (!token) {
       alert("You must be logged in to comment.");
@@ -38,20 +39,16 @@ const Home = () => {
     }
 
     try {
-      const response = await raxios.post(
-        `http://localhost:8080/posts/${postId}/comments`,
+      const response = await raxios.post(`/posts/${postId}/comments`,
         { content: commentText },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
       setPosts((prevPosts) =>
         prevPosts.map((post) =>
-          post.id === postId
-            ? { ...post, Comments: [...(post.Comments || []), response.data] }
-            : post
+          post.id === postId ? { ...post, Comments: [...(post.Comments || []), response.data] } : post
         )
       );
-
       setCommentInput((prev) => ({ ...prev, [postId]: "" }));
     } catch (error) {
       console.error("Error posting comment:", error.response?.data || error);
@@ -59,37 +56,49 @@ const Home = () => {
     }
   };
 
-  // Handle post deletion
   const handleDeletePost = async (postId) => {
     if (!token) {
       alert("You must be logged in to delete a post.");
       return;
     }
-  
-    console.log("Token sent:", token);
-  
+
     if (!window.confirm("Are you sure you want to delete this post?")) return;
-  
     const originalPosts = [...posts];
-  
     setPosts((prevPosts) => prevPosts.filter((post) => post.id !== postId));
-  
+
     try {
-      const response = await raxios.delete(`http://localhost:8080/posts/${postId}`, {
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json", // Ensure correct format
-        },
+      await raxios.delete(`/posts/${postId}`, {
+        headers: { Authorization: `Bearer ${token}` }
       });
-  
-      console.log("Delete response:", response);
     } catch (error) {
       console.error("Error deleting post:", error.response?.data || error);
       alert("Unauthorized to delete this post");
       setPosts(originalPosts);
     }
   };
-  
+
+  const handleEditPost = async (postId) => {
+    if (!token) {
+      alert("You must be logged in to edit a post.");
+      return;
+    }
+
+    try {
+      const response = await raxios.put(`/posts/${postId}`, editContent, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      setPosts((prevPosts) =>
+        prevPosts.map((post) =>
+          post.id === postId ? { ...post, title: response.data.title, content: response.data.content } : post
+        )
+      );
+      setEditMode(null);
+    } catch (error) {
+      console.error("Error updating post:", error.response?.data || error);
+      alert("Failed to update post. Please try again.");
+    }
+  };
 
   return (
     <div style={styles.home}>
@@ -100,15 +109,34 @@ const Home = () => {
           posts.map((post) => (
             <div key={post.id} style={styles.post}>
               <div style={styles.postHeader}>
-                <h2 style={styles.postTitle}>{post.title}</h2>
-                <img
-                  src={deleteIcon}
-                  alt="Delete"
-                  onClick={() => handleDeletePost(post.id)}
-                  style={styles.deleteIcon}
-                />
+                {editMode === post.id ? (
+                  <input
+                    type="text"
+                    value={editContent.title}
+                    onChange={(e) => setEditContent({ ...editContent, title: e.target.value })}
+                  />
+                ) : (
+                  <h2 style={styles.postTitle}>{post.title}</h2>
+                )}
+                <div style={styles.actionIcons}>
+                  <img src={editIcon} alt="Edit" onClick={() => { setEditMode(post.id); setEditContent({ title: post.title, content: post.content }); }} style={styles.editIcon} />
+                  <img src={deleteIcon} alt="Delete" onClick={() => handleDeletePost(post.id)} style={styles.deleteIcon} />
+                </div>
               </div>
-              <div style={styles.postText} dangerouslySetInnerHTML={{ __html: post.content }} />
+
+              {editMode === post.id ? (
+                <textarea
+                  value={editContent.content}
+                  onChange={(e) => setEditContent({ ...editContent, content: e.target.value })}
+                  style={styles.editTextarea}
+                />
+              ) : (
+                <div style={styles.postText} dangerouslySetInnerHTML={{ __html: post.content }} />
+              )}
+
+              {editMode === post.id ? (
+                <button onClick={() => handleEditPost(post.id)} style={styles.saveButton}>Save</button>
+              ) : null}
 
               <div style={styles.commentsSection}>
                 <h3 style={styles.commentTitle}>Comments</h3>
@@ -117,29 +145,17 @@ const Home = () => {
                     type="text"
                     placeholder="Write a comment..."
                     value={commentInput[post.id] || ""}
-                    onChange={(e) =>
-                      setCommentInput((prev) => ({
-                        ...prev,
-                        [post.id]: e.target.value,
-                      }))
-                    }
-                    style={styles.commentInput}
+                    onChange={(e) => setCommentInput((prev) => ({ ...prev, [post.id]: e.target.value }))}
                   />
-                  <button onClick={() => handleComment(post.id)} style={styles.commentButton}>
-                    Post
-                  </button>
+                  <button onClick={() => handleComment(post.id)}>Post</button>
                 </div>
-
-                <ul style={styles.commentList}>
+                <ul>
                   {post.Comments?.length > 0 ? (
                     post.Comments.map((comment, index) => (
-                      <li key={index} style={styles.commentItem}>
-                        <strong>{comment.username}</strong>
-                        <p>{comment.content}</p>
-                      </li>
+                      <li key={index}><strong>{comment.username}</strong>: {comment.content}</li>
                     ))
                   ) : (
-                    <li style={styles.noComments}>No comments yet. Be the first to comment!</li>
+                    <li>No comments yet.</li>
                   )}
                 </ul>
               </div>
@@ -152,6 +168,7 @@ const Home = () => {
     </div>
   );
 };
+
 
 // Styles
 const styles = {
@@ -185,6 +202,13 @@ const styles = {
     width: "20px",
     height: "20px",
     cursor: "pointer",
+    gap: "20px" ,  
+  },
+  editIcon: {
+    width: "20px",
+    height: "20px",
+    cursor: "pointer",
+    gap: "20px",
   },
   postText: {
     fontSize: "16px",
@@ -209,7 +233,7 @@ const styles = {
     flex: "1",
     padding: "10px",
     border: "1px solid #ccc",
-    borderRadius: "5px",
+    borderRadius: "15px",
     fontSize: "14px",
     outline: "none",
   },

@@ -72,14 +72,14 @@ const Write = () => {
       <div style={styles.sidebar}>
         {/* Publish Section */}
         <div style={styles.card}>
-          <h2>Publish</h2>
-          <p><b>Status:</b> Draft</p>
-          <p><b>Visibility:</b> Public</p>
-
+          <div className="h">
+          <h2>Post</h2>
+          </div>
+        
           <input type="file" id="file" style={{ display: "none" }} />
 
           <div style={styles.buttonContainer}>
-            <button style={styles.draftButton} disabled={loading}>Save as Draft</button>
+           
             <button style={styles.publishButton} onClick={handlePublish} disabled={loading}>
               {loading ? "Publishing..." : "Publish"}
             </button>
@@ -100,6 +100,15 @@ const styles = {
     backgroundColor: "#f4f4f9",
     minHeight: "100vh",
   },
+  h:{
+     fontSize:"20px",
+      color:"#000",
+      fontweight: "bold",
+      TextDecoder: "underline",
+      textAlign: "center",
+      padding: "10px",
+      justifyContent: "center",
+     },
   contentSection: {
     flex: 3,
     display: "flex",

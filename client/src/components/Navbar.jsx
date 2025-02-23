@@ -36,9 +36,7 @@ const Navbar = () => {
               <span className="see">
                 <Link className="link" to="/register">Register</Link>
               </span>
-              <span className="see">
-                <Link className="link" to="/Single">Edit</Link>
-              </span>
+             
               <span className="see">
                 <Link className="link" to="/Write">write</Link>
               </span>

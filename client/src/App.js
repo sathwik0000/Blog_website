@@ -6,7 +6,6 @@ import {
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
-import Single from "./pages/Single";
 import Write from "./pages/Write";
 import Navbar from "./components/Navbar";
 
@@ -33,10 +32,6 @@ const router = createBrowserRouter([
     },
 
     {
-      path:"/post/:id",
-      element:<Single/>
-    },
-    {
       path:"/Write",
       element:<Write/>
    },
@@ -58,10 +53,6 @@ const router = createBrowserRouter([
   {
     path: "/register",
     element: <Register />,
-  },
-  {
-    path: "/Single",
-    element: <Single />,
   },
   {
     path: "/write",

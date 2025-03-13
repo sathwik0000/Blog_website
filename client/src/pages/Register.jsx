@@ -31,41 +31,43 @@ const Register = () => {
 
     return (
         <div className="auth">
-            <h1>Register</h1>
-            <form onSubmit={handleSubmit}>
-                <input
-                    required
-                    type="text"
-                    placeholder="Username"
-                    name="username"
-                    value={inputs.username}
-                    onChange={handleChange}
-                />
-                <input
-                    required
-                    type="email"
-                    placeholder="E-mail"
-                    name="email"
-                    value={inputs.email}
-                    onChange={handleChange}
-                />
-                <input
-                    required
-                    type="password"
-                    placeholder="Password"
-                    name="password"
-                    value={inputs.password}
-                    onChange={handleChange}
-                />
-                <button type="submit">Register</button>
+            <div className="auth-container">
+                <h1>Register</h1>
+                <form onSubmit={handleSubmit}>
+                    <input
+                        required
+                        type="text"
+                        placeholder="Username"
+                        name="username"
+                        value={inputs.username}
+                        onChange={handleChange}
+                    />
+                    <input
+                        required
+                        type="email"
+                        placeholder="E-mail"
+                        name="email"
+                        value={inputs.email}
+                        onChange={handleChange}
+                    />
+                    <input
+                        required
+                        type="password"
+                        placeholder="Password"
+                        name="password"
+                        value={inputs.password}
+                        onChange={handleChange}
+                    />
+                    <button type="submit">Register</button>
 
-                {error && <p className="error">{error}</p>}
-                {success && <p className="success" style={{ color: "green" }} >{success}</p>}
+                    {error && <p className="error">{error}</p>}
+                    {success && <p className="success">{success}</p>}
 
-                <span>
-                    Already have an account? <Link to="/login">Login</Link>
-                </span>
-            </form>
+                    <span>
+                        Already have an account? <Link to="/login">Login</Link>
+                    </span>
+                </form>
+            </div>
         </div>
     );
 };

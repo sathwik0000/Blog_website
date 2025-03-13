@@ -1,6 +1,5 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import Logo from "../img/logo.png";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -14,9 +13,6 @@ const Navbar = () => {
   return (
     <div className="Navbar">
       <div className="container">
-        <div className="logo">
-          <img src={Logo} alt="Logo" />
-        </div>
         <div className="links">
           {username ? (
             <>
@@ -31,14 +27,13 @@ const Navbar = () => {
           ) : (
             <>
               <span className="see">
-                <Link className="link" to="/login">Login</Link>
+                <Link className="link" to="/Login">Login</Link>
               </span>
               <span className="see">
-                <Link className="link" to="/register">Register</Link>
+                <Link className="link" to="/Register">Register</Link>
               </span>
-             
               <span className="see">
-                <Link className="link" to="/Write">write</Link>
+                <Link className="link" to="/Write">Event Register</Link>
               </span>
             </>
           )}
